@@ -1,0 +1,43 @@
+---
+- name: "Create 'virtual' file"
+  ansible.builtin.template:
+    src: "postfix/{{postfix_paths['virtual'] | basename}}.j2"
+    dest: "{{postfix_paths['virtual']}}"
+    mode: "0644"
+
+- name: "Config 'virtual' file"
+  ansible.builtin.command: >
+    sudo postmap /etc/postfix/virtual
+
+- name: "Update 'main.cf' file"
+  ansible.builtin.template:
+    src: "postfix/{{postfix_paths['main_cf'] | basename}}.j2"
+    dest: "{{postfix_paths['main_cf']}}"
+    mode: "0644"
+
+- name: "Update 'hostname' file"
+  ansible.builtin.template:
+    src: "postfix/{{postfix_paths['hostname'] | basename}}.j2"
+    dest: "{{postfix_paths['hostname']}}"
+    mode: "0644"
+
+- name: "Activate ufw"
+  community.general.ufw:
+    state: enabled
+
+- name: "Allow ports 80 and 22"
+  community.general.ufw:
+    rule: allow
+    port: "{{item}}"
+  with_items:
+    - ssh
+    - http
+
+- name: "Generate Let's encrypt sertificates for domain"
+  ansible.builtin.expect:
+    command: sudo certbot certonly --standalone --rsa-key-size 4096 --agree-tos --preferred-challenges http -d {{domain}}
+    echo: yes
+    responses:
+      "Enter email address": "{{admin_email}}"
+      "Would you be willing": "Y"
+      "Select the appropriate number": "1"

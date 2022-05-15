@@ -1,0 +1,59 @@
+---
+- name: "Create a directory for domain's keys if it does not exist"
+  ansible.builtin.file:
+    path: "{{opendkim_paths['keys']}}{{domain}}/"
+    state: directory
+    mode: "0755"
+
+- name: "Generate dkim kyes"
+  ansible.builtin.command: >
+    opendkim-genkey --directory {{opendkim_paths['keys']}}{{domain}}/ --domain {{domain}} --selector dkim
+  args:
+    creates: "{{opendkim_paths['keys']}}{{domain}}/dkim.*"
+
+- name: "Change owner and group for domain's keys directory and files"
+  ansible.builtin.file:
+    path: "{{opendkim_paths['keys']}}{{domain}}/"
+    state: directory
+    mode: "0600"
+    recurse: yes
+    owner: opendkim
+    group: opendkim
+
+- name: "Change mode for domain's keys directory"
+  ansible.builtin.file:
+    path: "{{opendkim_paths['keys']}}{{domain}}/"
+    state: directory
+    mode: "0750"
+
+- name: "Update opendkim.conf file"
+  ansible.builtin.blockinfile:
+    dest: "{{opendkim_paths['config']}}"
+    block: '{{ lookup(''template'', ''opendkim/{{opendkim_paths["config"] | basename }}.j2'') }}'
+    backup: yes
+    insertafter: EOF
+
+- name: "Create and configure 'TrustedHosts' file"
+  ansible.builtin.template:
+    src: "opendkim/{{opendkim_paths['trustedhosts'] | basename}}.j2"
+    dest: "{{opendkim_paths['trustedhosts']}}"
+    mode: "0644"
+
+- name: "Create and configure 'KeyTable' file"
+  ansible.builtin.template:
+    src: "opendkim/{{opendkim_paths['keytable'] | basename}}.j2"
+    dest: "{{opendkim_paths['keytable']}}"
+    mode: "0644"
+
+- name: "Create and configure 'SigningTable' file"
+  ansible.builtin.template:
+    src: "opendkim/{{opendkim_paths['signingtable'] | basename}}.j2"
+    dest: "{{opendkim_paths['signingtable']}}"
+    mode: "0644"
+
+- name: "Update opendkim file"
+  ansible.builtin.blockinfile:
+    dest: "{{opendkim_paths['opendkim']}}"
+    block: '{{ lookup(''template'', ''opendkim/{{opendkim_paths["opendkim"] | basename }}.j2'') }}'
+    backup: yes
+    insertafter: EOF

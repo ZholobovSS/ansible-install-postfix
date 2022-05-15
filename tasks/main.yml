@@ -1,0 +1,60 @@
+---
+# tasks file for zh2s.install_postfix
+
+- name: "Check value of 'domain' variable"
+  ansible.builtin.fail:
+    msg: "You should set value of 'domain' variable"
+  when: domain == None
+
+- name: "Check value of 'admin_email' variable"
+  ansible.builtin.fail:
+    msg: "You should set value of 'domain' variable"
+  when: admin_email == None
+
+- name: "Install dependencies"
+  ansible.builtin.apt:
+    pkg: "{{list_of_packages}}"
+    state: latest
+
+- name: "Install pexpect"
+  ansible.builtin.pip:
+    name: pexpect
+
+- name: "Start enable service on boot"
+  ansible.builtin.service:
+    name: "{{item}}"
+    enabled: yes
+  with_items:
+    - opendkim
+    - postfix
+
+- name: "Start service"
+  ansible.builtin.service:
+    name: "{{item}}"
+    state: started
+  with_items:
+    - opendkim
+    - postfix
+
+- name: "Include opendkim task"
+  ansible.builtin.include_tasks: opendkim.yml
+
+- name: "Include postfix task"
+  ansible.builtin.include_tasks: postfix.yml
+
+- name: Reboot the server
+  ansible.builtin.reboot:
+    msg: "Reboot initiated by Ansible"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+
+- name: "Restart services"
+  ansible.builtin.service:
+    name: "{{item}}"
+    state: restarted
+  with_items:
+    - opendkim
+    - postfix

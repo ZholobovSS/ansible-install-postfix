@@ -1,0 +1,13 @@
+---
+# handlers file for zh2s.install_postfix
+- name: "Restart postfix service"
+  service:
+    name: postfix
+    state: restarted
+  listen: restart postfix
+
+- name: "Restart opendkim service"
+  service:
+    name: opendkim
+    state: restarted
+  listen: restart opendkim

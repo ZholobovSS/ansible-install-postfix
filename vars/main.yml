@@ -1,0 +1,23 @@
+---
+# vars file for zh2s.install_postfix
+postfix_paths:
+  main_cf: /etc/postfix/main.cf
+  virtual: /etc/postfix/virtual
+  hostname: /etc/hostname
+
+
+opendkim_paths:
+  keys: "/etc/opendkim/keys/"
+  config: /etc/opendkim.conf
+  opendkim: /etc/default/opendkim
+  trustedhosts: /etc/opendkim/TrustedHosts
+  keytable: /etc/opendkim/KeyTable
+  signingtable: /etc/opendkim/SigningTable
+
+
+list_of_packages:
+  - opendkim
+  - opendkim-tools
+  - mailutils
+  - certbot
+  - python3-pip
