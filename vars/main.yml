@@ -5,7 +5,6 @@ postfix_paths:
   virtual: /etc/postfix/virtual
   hostname: /etc/hostname
 
-
 opendkim_paths:
   keys: "/etc/opendkim/keys/"
   config: /etc/opendkim.conf
@@ -13,7 +12,6 @@ opendkim_paths:
   trustedhosts: /etc/opendkim/TrustedHosts
   keytable: /etc/opendkim/KeyTable
   signingtable: /etc/opendkim/SigningTable
-
 
 list_of_packages:
   - opendkim

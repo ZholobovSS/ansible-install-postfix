@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Tests
+  hosts: localhost
   remote_user: root
   roles:
-    - zh2s.install_postfix
+    - ansible-install-postfix
