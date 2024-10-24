@@ -1,6 +1,4 @@
 ---
-# tasks file for zh2s.install_postfix
-
 - name: "Check value of 'domain' variable"
   ansible.builtin.fail:
     msg: "You should set value of 'domain' variable"
@@ -15,10 +13,6 @@
   ansible.builtin.apt:
     pkg: "{{ list_of_packages }}"
     state: latest
-
-- name: "Install pexpect"
-  ansible.builtin.pip:
-    name: pexpect
 
 - name: "Start enable service on boot"
   ansible.builtin.service:

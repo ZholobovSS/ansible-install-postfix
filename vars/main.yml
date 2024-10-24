@@ -1,5 +1,4 @@
 ---
-# vars file for zh2s.install_postfix
 postfix_paths:
   main_cf: /etc/postfix/main.cf
   virtual: /etc/postfix/virtual
@@ -19,3 +18,5 @@ list_of_packages:
   - mailutils
   - certbot
   - python3-pip
+  - python3-pexpect
+  - ufw

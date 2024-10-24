@@ -1,5 +1,4 @@
 ---
-# handlers file for zh2s.install_postfix
 - name: "Restart postfix service"
   ansible.builtin.service:
     name: postfix
