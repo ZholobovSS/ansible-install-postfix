@@ -6,7 +6,7 @@
 
 - name: "Check value of 'admin_email' variable"
   ansible.builtin.fail:
-    msg: "You should set value of 'domain' variable"
+    msg: "You should set value of 'admin_email' variable"
   when: admin_email == None
 
 - name: "Install dependencies"
