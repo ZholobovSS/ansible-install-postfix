@@ -33,7 +33,7 @@
     - ssh
     - http
 
-- name: "Generate Let's encrypt sertificates for domain"
+- name: "Generate Let's encrypt certificates for domain"
   ansible.builtin.expect:
     command: sudo certbot certonly --standalone --rsa-key-size 4096 --agree-tos --preferred-challenges http -d {{ domain }}
     echo: true
