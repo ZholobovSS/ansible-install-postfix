@@ -12,20 +12,13 @@
 - name: "Install dependencies"
   ansible.builtin.apt:
     pkg: "{{ list_of_packages }}"
-    state: latest
+    state: latest # noqa package-latest
 
-- name: "Start enable service on boot"
-  ansible.builtin.service:
-    name: "{{ item }}"
-    enabled: true
-  with_items:
-    - opendkim
-    - postfix
-
-- name: "Start service"
+- name: "Start and enable service on boot"
   ansible.builtin.service:
     name: "{{ item }}"
     state: started
+    enabled: true
   with_items:
     - opendkim
     - postfix

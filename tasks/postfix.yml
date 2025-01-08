@@ -6,8 +6,8 @@
     mode: "0644"
 
 - name: "Config 'virtual' file"
-  ansible.builtin.command: >
-    sudo postmap /etc/postfix/virtual
+  ansible.builtin.command: postmap /etc/postfix/virtual
+  changed_when: true
 
 - name: "Update 'main.cf' file"
   ansible.builtin.template:
@@ -20,6 +20,10 @@
     src: "postfix/{{ postfix_paths['hostname'] | basename }}.j2"
     dest: "{ postfix_paths['hostname'] }}"
     mode: "0644"
+
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: "{{ domain }}"
 
 - name: "Activate ufw"
   community.general.ufw:
@@ -35,7 +39,7 @@
 
 - name: "Generate Let's encrypt certificates for domain"
   ansible.builtin.expect:
-    command: sudo certbot certonly --standalone --rsa-key-size 4096 --agree-tos --preferred-challenges http -d {{ domain }}
+    command: certbot certonly --standalone --rsa-key-size 4096 --agree-tos --preferred-challenges http -d {{ domain }}
     echo: true
     responses:
       "Enter email address": "{{ admin_email }}"
